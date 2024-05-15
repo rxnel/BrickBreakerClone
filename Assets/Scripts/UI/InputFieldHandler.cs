@@ -6,7 +6,7 @@ public class InputFieldHandler : MonoBehaviour
 {
     public TMP_InputField inputField; // Use TMP_InputField instead of InputField
     public Button submitButton;
-
+    public NameState nameState;
     private void Start()
     {
         // Ensure the button is disabled if the input field is initially empty
@@ -20,5 +20,6 @@ public class InputFieldHandler : MonoBehaviour
     {
         // Enable the button if the input field is not empty, disable it otherwise
         submitButton.interactable = !string.IsNullOrEmpty(input);
+        nameState.PlayerName = input;
     }
 }
