@@ -11,6 +11,8 @@ public class MainManager : MonoBehaviour
     public Rigidbody Ball;
 
     public Text ScoreText;
+    public Text BestScoreText;
+    public Text Name;
     public GameObject GameOverText;
 
     private bool m_Started = false;
@@ -24,8 +26,14 @@ public class MainManager : MonoBehaviour
     // Start is called before the first frame update
     void Start()
     {
+        if (NameState.Instance == null)
+        {
+            SceneManager.LoadScene("menu");
+            return;
+        }
+        TryLoadBestScore();
         playerName = NameState.Instance.PlayerName;
-        Debug.Log(playerName);
+        Name.text = $"Player: {playerName}";
         const float step = 0.6f;
         int perLine = Mathf.FloorToInt(4.0f / step);
 
@@ -46,6 +54,7 @@ public class MainManager : MonoBehaviour
     {
         if (!m_Started)
         {
+            Time.timeScale = 1;
             if (Input.GetKeyDown(KeyCode.Space))
             {
                 m_Started = true;
@@ -59,6 +68,7 @@ public class MainManager : MonoBehaviour
         }
         else if (m_GameOver)
         {
+            Time.timeScale = 0;
             if (Input.GetKeyDown(KeyCode.Space))
             {
                 SceneManager.LoadScene(SceneManager.GetActiveScene().buildIndex);
@@ -69,12 +79,34 @@ public class MainManager : MonoBehaviour
     void AddPoint(int point)
     {
         m_Points += point;
-        ScoreText.text = $"Score : {m_Points}";
+        ScoreText.text = $"Score: {m_Points}";
     }
 
     public void GameOver()
     {
         m_GameOver = true;
+        if (TryUpdateBestScore())
+        {
+            GameOverText.GetComponent<Text>().text = "New best score!";
+        }
         GameOverText.SetActive(true);
+    }
+
+    private bool TryUpdateBestScore()
+    {
+        if (PlayerPrefs.GetInt("BestScore", 0) < m_Points)
+        {
+            PlayerPrefs.SetInt("BestScore", m_Points);
+            PlayerPrefs.SetString("BestPlayer", playerName);
+            return true;
+        }
+        return false;
+    }
+
+    private void TryLoadBestScore()
+    {
+        int bestScore = PlayerPrefs.GetInt("BestScore", 0);
+        string bestPlayer = PlayerPrefs.GetString("BestPlayer", "No one");
+        BestScoreText.text = $"Best score: {bestScore} by {bestPlayer}";
     }
 }
