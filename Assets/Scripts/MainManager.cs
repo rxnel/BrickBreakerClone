@@ -109,4 +109,9 @@ public class MainManager : MonoBehaviour
         string bestPlayer = PlayerPrefs.GetString("BestPlayer", "No one");
         BestScoreText.text = $"Best score: {bestScore} by {bestPlayer}";
     }
+
+    public void GoToMenu()
+    {
+        SceneManager.LoadScene("menu");
+    }
 }
