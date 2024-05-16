@@ -5,6 +5,8 @@ using UnityEngine.SceneManagement;
 
 public class MenuUIController : MonoBehaviour
 {
+    public ColorSettings colorSettings; // Reference to your ScriptableObject
+    public FlexibleColorPicker colorPicker;
     // Start is called before the first frame update
     void Start()
     {
@@ -13,6 +15,7 @@ public class MenuUIController : MonoBehaviour
 
     public void StartNew()
     {
+        colorSettings.selectedColor = colorPicker.color;
         SceneManager.LoadScene("main");
     }
 
